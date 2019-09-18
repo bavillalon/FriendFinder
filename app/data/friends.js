@@ -1,3 +1,4 @@
+//friends variable that wil lbe used to store the freinds and get the information from them.
 var friends = [
     {
         "name": "Michael Scott",
@@ -36,6 +37,6 @@ var friends = [
         "scores": [1,2,3,4,5,5,4,3,2,1]
     }
 ];
-
+//required export for the start of the friends variable.
 module.exports=friends;
 

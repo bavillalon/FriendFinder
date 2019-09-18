@@ -1,18 +1,20 @@
 <!doctype html>
 <html lang="en">
-  <head>
+
+<head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
     <title>Office Friend Finder!</title>
-  </head>
+</head>
 
 <body>
-
+    <!--html mostly copied from the example but some things were cleared up-->
     <div class="container">
 
         <div class="jumbotron text-center">
@@ -21,7 +23,7 @@
             <h5>(You know this is creepy right?..)</h5>
 
         </div>
-
+        <!--form control is used in all of the form optiuons because why not.-->
         <h4>Name (Required)</h4>
         <input type="text" id="name" class="form-control">
 
@@ -164,7 +166,7 @@
         <br>
 
         <!-- Submit Button -->
-        
+
         <button type="submit" class="btn btn-primary btn-lg" id="submit">
             Submit
         </button>
@@ -179,7 +181,7 @@
 
     </div>
 
-    <!-- Modal -->
+    <!-- Modal example from the w3 schools site with specifics fo rthe app-->
     <div id="results-modal" class="modal fade" role="dialog">
         <div class="modal-dialog">
 
@@ -191,36 +193,38 @@
                 </div>
                 <div class="modal-body">
                     <h2 id="match-name"></h2>
-                    <img id="match-img"
-                        src="" alt="">
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <img id="match-img" src="" alt="">
                 </div>
             </div>
 
         </div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-    <script src="assets/javascript/app.js"></script>
+
+    <!--required scripts for bootstrap, jquery, and ehatever. I copied them from an old project.-->
+    <script src="https://code.jquery.com/jquery-3.3.1.js"
+        integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
     <script type="text/javascript">
 
-        // Capture the form inputs
+        // on click, of submit, pass the event to the function
         $("#submit").on("click", function (event) {
             event.preventDefault();
 
-            var formComplete=true;
+            //set the initial value to true but iterate through the object and "AND EQUALS" the values. if the value is not filled,
+            //the ralationship will be false and the and will permenantly make the firmcomplete value false.
+            var formComplete = true;
+            $(".form-control").each(function () {
+                formComplete = ($(this).val() != "") && formComplete;
+            });
 
-                $(".form-control").each(function () {
-                    formComplete=($(this).val()!= "")&&formComplete;
-                });
-
-                console.log(formComplete);
-            // If all required fields are filled
+            console.log(formComplete);
             if (formComplete) {
-                // Create an object for the user"s data
+                // if the form is complete then the values are added to a new object for posting to the server.
                 var userData = {
                     name: $("#name").val(),
                     photo: $("#photo").val(),
@@ -238,20 +242,21 @@
                     ]
                 };
 
-                // AJAX post the data to the friends API.
+                // sending using ajax to the friend api. teh response will be used to pill the modal with the best match.
                 $.post("/api/friends", userData, function (data) {
                     console.log(data);
-                    // Grab the result from the AJAX post so that the best match's name and photo are displayed.
+                    // best match of the person. the attributes for src and alt are filled here too.
                     $(".modal-title").text("Best Match!");
                     $("#match-name").text(data.name);
                     $("#match-img").attr("src", data.photo);
                     $("#match-img").attr("alt", "image of " + data.name + " goes here.");
 
-                    // Show the modal with the best match
+                    // Show the modal
                     $("#results-modal").modal("toggle");
 
                 });
             } else {
+                //if the fields are not filled, fill the modal with an error message.
                 $(".modal-title").text("");
                 $("#match-name").text("Please fill out all fields!!!");
                 $("#match-img").attr("src", "");
